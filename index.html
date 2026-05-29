@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generador de Planificación Gratuito — Andrea Educatips</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#008000;--green-dk:#005c00;--green-lt:#e8f5e8;--green-md:#b8ddb8;
+  --purple:#951abe;--purple-lt:#f3e8fa;--purple-dk:#6a0f8a;
+  --blue:#0000cc;--blue-lt:#e6efff;
+  --gold:#b8860b;--gold-lt:#fef8e7;
+  --gray:#f6f6f3;--gray2:#e8e7e2;--gray3:#c0bfba;
+  --text:#18180f;--text2:#52524a;--text3:#8a8a80;
+  --white:#fff;--radius:14px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--gray);color:var(--text);min-height:100vh}
+
+.hdr{background:var(--white);border-bottom:1px solid var(--gray2);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;flex-wrap:wrap;gap:8px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-dot{width:30px;height:30px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.logo-dot span{color:white;font-weight:700;font-size:15px}
+.logo-name{font-family:'Playfair Display',serif;font-size:17px;color:var(--text)}
+.logo-name em{color:var(--purple);font-style:normal}
+.uso-counter{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
+.uso-dots{display:flex;gap:4px}
+.dot{width:10px;height:10px;border-radius:50%;transition:background .3s}
+.dot.used{background:var(--green)}
+.dot.empty{background:var(--gray2)}
+
+.upgrade-banner{background:var(--purple);color:white;text-align:center;padding:.55rem 1rem;font-size:13px;font-weight:500}
+.upgrade-banner a{color:#e8c8f8;text-decoration:underline;cursor:pointer}
+
+.hero{background:var(--white);border-bottom:1px solid var(--gray2);padding:2.5rem 1.5rem 2rem;text-align:center}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--purple);margin-bottom:.9rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,36px);color:var(--text);line-height:1.2;margin-bottom:.8rem;max-width:560px;margin-left:auto;margin-right:auto}
+.hero h1 span{color:var(--green)}
+.hero p{font-size:14px;color:var(--text2);line-height:1.75;max-width:480px;margin:0 auto 1.25rem}
+.tags{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:500;padding:3px 11px;border-radius:20px}
+.tg{background:var(--green-lt);color:var(--green-dk)}
+.tp{background:var(--purple-lt);color:var(--purple-dk)}
+.tb{background:var(--blue-lt);color:var(--blue)}
+
+.main{max-width:860px;margin:1.75rem auto;padding:0 1.25rem;display:flex;flex-direction:column;gap:1.1rem}
+
+.card{background:var(--white);border:1px solid var(--gray2);border-radius:var(--radius);overflow:hidden}
+.card-hdr{padding:.9rem 1.25rem;border-bottom:1px solid var(--gray2);display:flex;align-items:center;gap:10px}
+.card-icon{width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ic-g{background:var(--green-lt)}.ic-p{background:var(--purple-lt)}.ic-b{background:var(--blue-lt)}
+.card-title{font-size:14px;font-weight:600;color:var(--text)}
+.card-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.card-body{padding:1.1rem 1.25rem}
+
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+@media(max-width:560px){.fg{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:12px;font-weight:600;color:var(--text2);letter-spacing:.02em}
+.req{color:var(--purple)}
+select,input,textarea{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);background:var(--white);border:1.5px solid var(--gray3);border-radius:var(--radius-sm);padding:9px 12px;width:100%;outline:none;transition:border-color .2s;appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a8a80' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px}
+select:focus,input:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:72px;line-height:1.6}
+.hint{font-size:11px;color:var(--text3);line-height:1.5}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:6px 13px;border:1.5px solid var(--gray3);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;user-select:none}
+.chip:hover{border-color:var(--green);color:var(--green)}
+.chip.on-p{border-color:var(--purple);background:var(--purple-lt);color:var(--purple-dk);font-weight:600}
+.chip.on-b{border-color:var(--blue);background:var(--blue-lt);color:var(--blue);font-weight:600}
+
+.metod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px}
+.mb{padding:8px 10px;border:1.5px solid var(--gray3);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;text-align:center;transition:all .15s;line-height:1.35}
+.mb:hover{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+.mb.on{border-color:var(--green);color:var(--green-dk);background:var(--green-lt);font-weight:600}
+
+.btn-gen{width:100%;padding:14px;background:var(--green);color:white;border:none;border-radius:var(--radius);font-family:'Playfair Display',serif;font-size:17px;cursor:pointer;transition:background .2s;margin-top:.4rem}
+.btn-gen:hover{background:var(--green-dk)}
+.btn-gen:disabled{background:var(--gray3);cursor:not-allowed}
+
+.prog-wrap{display:none;margin-top:.9rem;text-align:center}
+.prog-wrap.show{display:block}
+.prog-msg{font-size:13px;color:var(--text3);margin-bottom:8px}
+.prog-steps{display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap}
+.ps{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;background:var(--gray2);color:var(--text3);transition:all .3s}
+.ps.active{background:var(--green);color:white}
+.ps.done{background:var(--green-lt);color:var(--green-dk)}
+.psep{color:var(--gray3);font-size:11px}
+.err-msg{display:none;margin-top:.75rem;padding:.75rem 1rem;background:#fde8e8;border:1px solid #f0a0a0;border-radius:var(--radius-sm);font-size:13px;color:#8a0000;line-height:1.6}
+.err-msg.show{display:block}
+
+.limit-box{background:var(--purple-lt);border:1.5px solid var(--purple);border-radius:var(--radius);padding:1.5rem;text-align:center;display:none}
+.limit-box.show{display:block}
+.limit-box h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--purple-dk);margin-bottom:.5rem}
+.limit-box p{font-size:14px;color:var(--purple-dk);line-height:1.7;margin-bottom:1rem}
+.btn-mem{display:inline-block;padding:11px 28px;background:var(--purple);color:white;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none}
+
+.res-wrap{display:none}
+.res-wrap.show{display:block}
+.res-topbar{background:var(--green);padding:1.1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.res-topbar h2{font-family:'Playfair Display',serif;font-size:18px;color:white}
+.btn-copy{padding:7px 15px;background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-copy:hover{background:rgba(255,255,255,.25)}
+
+.res-meta{padding:.9rem 1.25rem;background:var(--gray);border-bottom:1px solid var(--gray2);display:flex;flex-wrap:wrap;gap:6px}
+.mpill{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px}
+
+.res-body{padding:1.25rem}
+.dest-block{background:var(--gray);border-radius:var(--radius-sm);padding:.9rem 1rem;margin-bottom:1.25rem;border-left:3px solid var(--green)}
+.dest-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.dest-val{font-size:13px;color:var(--text2);line-height:1.7}
+.ind-val{font-size:14px;color:var(--text);font-weight:600;margin-top:.5rem}
+
+.etapa{margin-bottom:1.5rem;border-left:3px solid var(--green);padding-left:1rem}
+.etapa.ref{border-color:var(--purple)}
+.etapa.con{border-color:var(--blue)}
+.etapa.apl{border-color:var(--gold)}
+.etapa-ey{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px}
+.ey-e{color:var(--green-dk)}.ey-r{color:var(--purple-dk)}.ey-c{color:var(--blue)}.ey-a{color:var(--gold)}
+.etapa-nom{font-family:'Playfair Display',serif;font-size:16px;color:var(--text);margin-bottom:.5rem}
+.etapa-desc{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:.7rem}
+.ins-note{font-size:12px;color:var(--purple-dk);background:var(--purple-lt);border-radius:var(--radius-sm);padding:7px 11px;margin-bottom:.7rem;line-height:1.55;border-left:3px solid var(--purple)}
+.dua-grid{display:flex;flex-direction:column;gap:6px}
+.dua-item{border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;line-height:1.6}
+.d-rep{background:var(--purple-lt);color:var(--purple-dk)}
+.d-acc{background:var(--blue-lt);color:var(--blue)}
+.d-imp{background:var(--green-lt);color:var(--green-dk)}
+.dua-lbl{font-weight:700;margin-bottom:2px}
+
+.rec-block{background:var(--gray);border:1px solid var(--gray2);border-radius:var(--radius-sm);padding:.9rem 1.1rem;margin-top:.75rem}
+.rec-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.eval-block{background:var(--gold-lt);border:1px solid #e0cc80;border-radius:var(--radius-sm);padding:.9rem 1.1rem;margin-top:.75rem}
+.eval-lbl{font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.eval-val{font-size:13px;color:#5a4000;line-height:1.7}
+
+.upgrade-cta{background:var(--purple-lt);border:1.5px solid var(--purple);border-radius:var(--radius);padding:1.25rem;text-align:center;margin-top:1rem}
+.upgrade-cta h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--purple-dk);margin-bottom:.4rem}
+.upgrade-cta p{font-size:13px;color:var(--purple-dk);line-height:1.65;margin-bottom:.9rem}
+.upgrade-cta .feats{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:1rem}
+.feat{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;background:white;color:var(--purple-dk);border:1px solid var(--purple)}
+
+.brand-ft{text-align:center;padding:.9rem;border-top:1px solid var(--gray2);background:var(--gray)}
+.brand-ft p{font-size:11px;color:var(--text3)}
+.brand-ft strong{color:var(--green)}
+.btn-nueva{display:block;width:100%;margin-top:.9rem;padding:12px;background:var(--white);color:var(--purple);border:1.5px solid var(--purple);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
+.btn-nueva:hover{background:var(--purple-lt)}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <a class="logo" href="#">
+    <div class="logo-dot"><span>A</span></div>
+    <span class="logo-name">Andrea <em>Educatips</em></span>
+  </a>
+  <div class="uso-counter">
+    <span id="uso-txt">5 usos gratuitos</span>
+    <div class="uso-dots">
+      <div class="dot empty" id="d1"></div>
+      <div class="dot empty" id="d2"></div>
+      <div class="dot empty" id="d3"></div>
+      <div class="dot empty" id="d4"></div>
+      <div class="dot empty" id="d5"></div>
+    </div>
+  </div>
+</header>
+
+<div class="upgrade-banner">
+  ✦ ¿Quieres la planificación en tabla descargable? <a onclick="irAMembresia()">Membresía por $5/mes →</a>
+</div>
+
+<div class="hero">
+  <p class="eyebrow">Planificación curricular gratuita · Ecuador · IA real</p>
+  <h1>Genera tu <span>planificación de clase</span> con inteligencia artificial</h1>
+  <p>Completa los datos y obtén una planificación ERCA-DUA única, generada por IA, con tus competencias e inserciones. Gratis hasta 5 veces.</p>
+  <div class="tags">
+    <span class="tag tg">IA real integrada</span>
+    <span class="tag tp">ERCA + DUA</span>
+    <span class="tag tb">Currículo Ecuador</span>
+    <span class="tag tg">5 usos gratis</span>
+  </div>
+</div>
+
+<div class="main">
+
+<div class="limit-box" id="limit-box">
+  <h3>Has usado tus 5 planificaciones gratuitas</h3>
+  <p>Para continuar generando planificaciones ilimitadas, en <strong>formato tabla estilo CAI descargable en Word</strong>, únete a la membresía de Andrea Educatips por solo <strong>$5 al mes</strong>.</p>
+  <a class="btn-mem" href="#membresia" onclick="irAMembresia()">Unirme a la membresía →</a>
+</div>
+
+<div class="card" id="form-section">
+  <div class="card-hdr">
+    <div class="card-icon ic-g">📋</div>
+    <div><div class="card-title">Datos de la clase</div><div class="card-sub">Campos obligatorios *</div></div>
+  </div>
+  <div class="card-body">
+    <div class="fg">
+      <div class="field">
+        <label>Nivel educativo <span class="req">*</span></label>
+        <select id="nivel">
+          <option value="">Selecciona el nivel</option>
+          <option value="Educación Inicial 1 (2-3 años)">Educación Inicial 1 (2-3 años)</option>
+          <option value="Educación Inicial 2 (4-5 años)">Educación Inicial 2 (4-5 años)</option>
+          <option value="Educación Básica Elemental (1°-4°)">Básica Elemental (1°-4°)</option>
+          <option value="Educación Básica Media (5°-7°)">Básica Media (5°-7°)</option>
+          <option value="Educación Básica Superior (8°-10°)">Básica Superior (8°-10°)</option>
+          <option value="Bachillerato (1°-3°)">Bachillerato (1°-3°)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Asignatura <span class="req">*</span></label>
+        <select id="asig">
+          <option value="">Selecciona la asignatura</option>
+          <option>Lengua y Literatura</option><option>Matemática</option>
+          <option>Ciencias Naturales</option><option>Estudios Sociales</option>
+          <option>Educación Cultural y Artística</option><option>Educación Física</option>
+          <option>Emprendimiento y Gestión</option><option>Inglés</option>
+          <option>Física</option><option>Química</option><option>Biología</option>
+          <option>Historia</option><option>Filosofía</option><option>Otra asignatura</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Grado / Curso <span class="req">*</span></label>
+        <input type="text" id="grado" placeholder="Ej: 5to de Básica">
+      </div>
+      <div class="field">
+        <label>Tiempo de clase</label>
+        <select id="tiempo">
+          <option value="30">30 minutos</option>
+          <option value="45">45 minutos</option>
+          <option value="60" selected>60 minutos</option>
+          <option value="90">90 minutos</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label>Destreza con criterio de desempeño <span class="req">*</span></label>
+        <textarea id="destreza" placeholder="Escribe la destreza exactamente como aparece en el currículo MINEDUC..."></textarea>
+      </div>
+      <div class="field full">
+        <label>Indicador de logro <span class="req">*</span></label>
+        <input type="text" id="indicador" placeholder="Ej: Identifica la idea principal de un texto expositivo">
+      </div>
+      <div class="field full">
+        <label>Tema de la clase</label>
+        <input type="text" id="tema" placeholder="Ej: Los textos expositivos y su estructura">
+        <span class="hint">Si lo dejas vacío se inferirá de la destreza.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-hdr">
+    <div class="card-icon ic-p">🎯</div>
+    <div><div class="card-title">Énfasis en competencias</div><div class="card-sub">Selecciona una o varias</div></div>
+  </div>
+  <div class="card-body">
+    <div class="chips" id="comp-grid">
+      <span class="chip on-p" data-v="comunicacional">💬 Comunicacional</span>
+      <span class="chip" data-v="matemática">🔢 Matemática</span>
+      <span class="chip" data-v="digital">💻 Digital</span>
+      <span class="chip" data-v="socioemocional">❤️ Socioemocional</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-hdr">
+    <div class="card-icon ic-b">🔗</div>
+    <div><div class="card-title">Inserciones curriculares</div><div class="card-sub">Selecciona una o varias</div></div>
+  </div>
+  <div class="card-body">
+    <div class="chips" id="ins-grid">
+      <span class="chip on-b" data-v="cívica, ética e integridad">⚖️ Cívica, ética e integridad</span>
+      <span class="chip" data-v="socioemocional">🧠 Socioemocional</span>
+      <span class="chip" data-v="educación financiera">💰 Educación financiera</span>
+      <span class="chip" data-v="seguridad vial">🚦 Seguridad vial</span>
+      <span class="chip" data-v="desarrollo sostenible">🌱 Desarrollo sostenible</span>
+      <span class="chip" data-v="seguridad integral">🛡️ Seguridad integral</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-hdr">
+    <div class="card-icon ic-g">⚡</div>
+    <div><div class="card-title">Metodología de la Experiencia</div><div class="card-sub">Elige una</div></div>
+  </div>
+  <div class="card-body">
+    <div class="metod-grid" id="metod-grid">
+      <button class="mb on" data-m="ABJ">🎲 ABJ</button>
+      <button class="mb" data-m="Gamificación">🏆 Gamificación</button>
+      <button class="mb" data-m="Aula invertida">🔄 Aula invertida</button>
+      <button class="mb" data-m="Aprendizaje basado en problemas">🧩 Basado en problemas</button>
+      <button class="mb" data-m="Aprendizaje basado en proyectos">📁 Basado en proyectos</button>
+      <button class="mb" data-m="Aprendizaje basado en retos">💡 Basado en retos</button>
+      <button class="mb" data-m="Estaciones de aprendizaje">🗂️ Estaciones</button>
+      <button class="mb" data-m="Casos de estudio">🔍 Casos de estudio</button>
+      <button class="mb" data-m="Trabajo colaborativo">🤝 Colaborativo</button>
+      <button class="mb" data-m="Aprendizaje basado en el servicio">🌐 Servicio a la comunidad</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <button class="btn-gen" id="btn-gen" onclick="generar()">✦ Generar planificación con IA</button>
+    <div class="prog-wrap" id="prog-wrap">
+      <div class="prog-msg" id="prog-msg">Consultando a la IA...</div>
+      <div class="prog-steps">
+        <span class="ps" id="ps1">Preparando datos</span><span class="psep">→</span>
+        <span class="ps" id="ps2">Consultando IA</span><span class="psep">→</span>
+        <span class="ps" id="ps3">Construyendo ERCA-DUA</span><span class="psep">→</span>
+        <span class="ps" id="ps4">Lista</span>
+      </div>
+    </div>
+    <div class="err-msg" id="err-msg"></div>
+  </div>
+</div>
+
+<div class="res-wrap" id="res-wrap">
+  <div class="card">
+    <div class="res-topbar">
+      <h2 id="res-tit">Planificación de clase</h2>
+      <button class="btn-copy" onclick="copiar()">📋 Copiar texto</button>
+    </div>
+    <div class="res-meta" id="res-meta"></div>
+    <div class="res-body" id="res-body"></div>
+    <div class="upgrade-cta">
+      <h3>¿Quieres la versión en tabla descargable?</h3>
+      <p>Con la membresía obtienes esta misma planificación en <strong>formato tabla estilo CAI</strong>, descargable en Word, con usos ilimitados.</p>
+      <div class="feats">
+        <span class="feat">📊 Tabla CAI</span>
+        <span class="feat">📥 Descarga Word</span>
+        <span class="feat">♾️ Ilimitado</span>
+        <span class="feat">🤖 IA mejorada</span>
+      </div>
+      <a class="btn-mem" href="#" onclick="irAMembresia()">Unirme por $5/mes →</a>
+    </div>
+    <div class="brand-ft">
+      <p>Generado con IA por <strong>Andrea Educatips</strong> · andrea-educatips.com · Recurso gratuito para docentes</p>
+    </div>
+  </div>
+  <button class="btn-nueva" onclick="nueva()">+ Generar otra planificación</button>
+</div>
+
+</div>
+
+<script>
+const MAX=5;
+function getUsos(){return parseInt(localStorage.getItem('ae_usos_v2')||'0');}
+function setUsos(n){localStorage.setItem('ae_usos_v2',n);}
+function actualizarDots(){
+  const u=getUsos();
+  for(let i=1;i<=5;i++){
+    document.getElementById('d'+i).className='dot '+(i<=u?'used':'empty');
+  }
+  const r=MAX-u;
+  document.getElementById('uso-txt').textContent=r>0?`${r} uso${r!==1?'s':''} restante${r!==1?'s':''}`:'Sin usos disponibles';
+  if(u>=MAX){document.getElementById('limit-box').classList.add('show');document.getElementById('btn-gen').disabled=true;}
+}
+actualizarDots();
+
+document.getElementById('comp-grid').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;c.classList.toggle('on-p');});
+document.getElementById('ins-grid').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;c.classList.toggle('on-b');});
+document.getElementById('metod-grid').addEventListener('click',e=>{if(!e.target.classList.contains('mb'))return;document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));e.target.classList.add('on');});
+
+function getComps(){return[...document.querySelectorAll('#comp-grid .chip.on-p')].map(e=>e.dataset.v);}
+function getIns(){return[...document.querySelectorAll('#ins-grid .chip.on-b')].map(e=>e.dataset.v);}
+function getMetod(){const a=document.querySelector('.mb.on');return a?a.dataset.m:'ABJ';}
+
+async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function setStep(n,msg){
+  document.getElementById('prog-msg').textContent=msg;
+  ['ps1','ps2','ps3','ps4'].forEach((id,i)=>{
+    const el=document.getElementById(id);el.classList.remove('active','done');
+    if(i<n-1)el.classList.add('done');else if(i===n-1)el.classList.add('active');
+  });
+}
+
+function etapaHTML(cls,eyC,etq,plan){
+  const ins=plan.insercion?`<div class="ins-note">🔗 <strong>Inserción curricular:</strong> ${plan.insercion}</div>`:'';
+  return `<div class="etapa ${cls}">
+    <div class="etapa-ey ${eyC}">${etq}</div>
+    <div class="etapa-nom">${plan.nombre||''}</div>
+    <div class="etapa-desc">${plan.actividad||''}</div>
+    ${ins}
+    <div class="dua-grid">
+      <div class="dua-item d-rep"><div class="dua-lbl">🟣 Representación</div>${plan.representacion||''}</div>
+      <div class="dua-item d-acc"><div class="dua-lbl">🔵 Acción y expresión</div>${plan.accion||''}</div>
+      <div class="dua-item d-imp"><div class="dua-lbl">🟢 Implicación</div>${plan.implicacion||''}</div>
+    </div>
+  </div>`;
+}
+
+async function generar(){
+  if(getUsos()>=MAX){document.getElementById('limit-box').classList.add('show');return;}
+  const nivel=document.getElementById('nivel').value;
+  const asig=document.getElementById('asig').value;
+  const grado=document.getElementById('grado').value.trim();
+  const destreza=document.getElementById('destreza').value.trim();
+  const indicador=document.getElementById('indicador').value.trim();
+  let tema=document.getElementById('tema').value.trim();
+  const tiempo=document.getElementById('tiempo').value;
+  const metod=getMetod();
+  const comps=getComps();
+  const ins=getIns();
+  const errEl=document.getElementById('err-msg');
+  errEl.classList.remove('show');
+
+  if(!nivel||!asig||!grado||!destreza||!indicador){alert('Completa: nivel, asignatura, grado, destreza e indicador.');return;}
+  if(!tema)tema=destreza.split('.')[0].trim().substring(0,55);
+
+  const btn=document.getElementById('btn-gen');
+  btn.disabled=true;btn.textContent='Generando con IA...';
+  const pw=document.getElementById('prog-wrap');pw.classList.add('show');
+
+  setStep(1,'Preparando los datos de tu clase...');await sleep(400);
+  setStep(2,'La IA está construyendo tu planificación...');
+
+  try{
+    const resp=await fetch('/.netlify/functions/planificar',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nivel,asig,grado,tiempo,destreza,indicador,tema,metod,comps,ins})
+    });
+    const data=await resp.json();
+    if(!resp.ok||data.error)throw new Error(data.error||'Error del servidor');
+    const plan=data.plan;
+
+    setStep(3,'Construyendo el resultado...');await sleep(400);
+    setStep(4,'¡Lista!');await sleep(200);
+
+    const metaH=[
+      `<span class="mpill" style="background:#e8f5e8;color:#005700">${nivel}</span>`,
+      `<span class="mpill" style="background:#f3e8fa;color:#6a0f8a">${asig}</span>`,
+      `<span class="mpill" style="background:#e6efff;color:#0000aa">${grado} · ${tiempo} min</span>`,
+      `<span class="mpill" style="background:#e8e7e2;color:#52524a">${metod}</span>`,
+      ...comps.map(c=>`<span class="mpill" style="background:#f3e8fa;color:#6a0f8a">${c}</span>`),
+      ...ins.map(i=>`<span class="mpill" style="background:#e6efff;color:#0000aa">${i}</span>`)
+    ].join('');
+
+    const bodyH=`
+      <div class="dest-block">
+        <div class="dest-lbl">Destreza con criterio de desempeño</div>
+        <div class="dest-val">${destreza}</div>
+        <div class="dest-lbl" style="margin-top:.6rem">Indicador de logro</div>
+        <div class="ind-val">${indicador}</div>
+      </div>
+      ${etapaHTML('','ey-e','⬤ EXPERIENCIA — Recuperación',plan.experiencia)}
+      ${etapaHTML('ref','ey-r','⬤ REFLEXIÓN — Comprensión',plan.reflexion)}
+      ${etapaHTML('con','ey-c','⬤ CONCEPTUALIZACIÓN — Análisis',plan.conceptualizacion)}
+      ${etapaHTML('apl','ey-a','⬤ APLICACIÓN — Utilización',plan.aplicacion)}
+      <div class="rec-block">
+        <div class="rec-lbl">Recursos</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.7">${plan.recursos||''}</div>
+      </div>
+      <div class="eval-block">
+        <div class="eval-lbl">✦ Técnica e instrumento de evaluación</div>
+        <div class="eval-val"><strong>Técnica:</strong> ${plan.tecnica||''}<br><strong>Instrumento:</strong> ${plan.instrumento||''}<br><strong>Indicador:</strong> ${indicador}</div>
+      </div>`;
+
+    document.getElementById('res-tit').textContent=`Planificación: ${tema}`;
+    document.getElementById('res-meta').innerHTML=metaH;
+    document.getElementById('res-body').innerHTML=bodyH;
+
+    const nuevosUsos=getUsos()+1;
+    setUsos(nuevosUsos);
+    actualizarDots();
+
+    pw.classList.remove('show');
+    btn.disabled=false;btn.textContent='✦ Generar planificación con IA';
+    document.querySelectorAll('.main > .card, .main > .limit-box').forEach(c=>c.style.display='none');
+    document.getElementById('res-wrap').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  }catch(err){
+    pw.classList.remove('show');
+    btn.disabled=false;btn.textContent='✦ Generar planificación con IA';
+    errEl.textContent=`Error: ${err.message}`;
+    errEl.classList.add('show');
+  }
+}
+
+function nueva(){
+  if(getUsos()>=MAX){
+    document.getElementById('limit-box').style.display='block';
+    document.getElementById('res-wrap').classList.remove('show');
+    window.scrollTo({top:0,behavior:'smooth'});return;
+  }
+  document.querySelectorAll('.main > .card, .main > .limit-box').forEach(c=>c.style.display='block');
+  document.getElementById('res-wrap').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function copiar(){
+  const t=document.getElementById('res-tit').innerText;
+  const m=document.getElementById('res-meta').innerText;
+  const b=document.getElementById('res-body').innerText;
+  navigator.clipboard.writeText(`${t}\n${m}\n\n${b}\n\nGenerado por Andrea Educatips — andrea-educatips.com`).then(()=>{
+    const btn=document.querySelector('.btn-copy');btn.textContent='✓ ¡Copiado!';
+    setTimeout(()=>{btn.textContent='📋 Copiar texto';},2000);
+  });
+}
+
+function irAMembresia(){
+  alert('Aquí colocarás el enlace a tu página de membresía en Wix.');
+}
+</script>
+</body>
+</html>
